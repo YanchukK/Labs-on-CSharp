@@ -1,3 +1,3 @@
 # Labs-on-WinForms
 Реализация лабораторных работ на Windows Forms
-- (Диспетчер драйверов)
+- DriverManager (Диспетчер драйверов)
