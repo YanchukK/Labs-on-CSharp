@@ -50,7 +50,7 @@ namespace WindowsFormsApplication2
             }
             set
             {
-                if (value == " ")
+                if (string.IsNullOrEmpty(value))
                 {
                     throw new ArgumentOutOfRangeException("Пустых строк не должно быть!");
                 }
