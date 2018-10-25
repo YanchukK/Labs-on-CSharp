@@ -1,2 +1,2 @@
 # DriverManager
-Реализация диспетчера драйверов на Windows Forms
+Реализация лабораторных работ на Windows Forms
