@@ -68,7 +68,9 @@ namespace WindowsFormsApplication2
         
         public bool ready()
         {
-            if (listOfDeviceName.Contains("процессор") && listOfDeviceName.Contains("видеокарта") && listOfDeviceName.Contains("материнская_плата") && listOfDeviceName.Contains("оперативная_память") && listOfDeviceName.Contains("винчестер") && listOfDeviceName.Contains("клавиатура"))
+            if (listOfDeviceName.Contains("процессор") && listOfDeviceName.Contains("видеокарта")
+                && listOfDeviceName.Contains("материнская_плата") && listOfDeviceName.Contains("оперативная_память")
+                && listOfDeviceName.Contains("винчестер") && listOfDeviceName.Contains("клавиатура"))
             {
                 return true;
             }
