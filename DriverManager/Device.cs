@@ -9,22 +9,12 @@ namespace WindowsFormsApplication2
 {
     class Device
     {
-       /*ДАННЫЕ
-       - готовность к работе
-       МЕТОДЫ 
-       - проверка совмест имости(с драйвером)*/
+       /*МЕТОДЫ 
+       - проверка совместимости (с драйвером)*/
 
         private string name;
         private string type;
         private object driver;
-
-        //public bool readyForWork() // и как ней пользоваться?
-        //{
-        //    if (DriverOnDevice == null)
-        //        return false;
-        //    else
-        //        return true;
-        //}
         
         public Device(string DeviceName, string DeviceType, object o)
         {
@@ -32,7 +22,6 @@ namespace WindowsFormsApplication2
             name = DeviceType;
             driver = o;
         }
-        
         
         public object DriverOnDevice { get; set; }
         
@@ -46,7 +35,7 @@ namespace WindowsFormsApplication2
             }
             set
             {
-                if (value == "")
+                if (string.IsNullOrEmpty(value))
                 {
                     throw new ArgumentOutOfRangeException("Отрицательных значений не должно быть!");
                 }
