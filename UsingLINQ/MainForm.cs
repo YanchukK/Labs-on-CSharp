@@ -14,7 +14,7 @@ namespace WindowsFormsApplication5
             InitializeComponent();
         }
 
-        List<Person> list = new List<Person>();
+        List<Person> list = new List<Person>(); // Список учителей и предметов
         private BindingSource bindingSource1 = new BindingSource();
 
         DataSet ds = new DataSet();
@@ -37,7 +37,7 @@ namespace WindowsFormsApplication5
                 {
                     if (list.Exists(x => x.Name == teacher) && list.Exists(x => x.Subject == subject))
                     {
-                        MessageBox.Show("Така пара значений уже есть");
+                        MessageBox.Show("Такая пара значений уже есть");
                     }
                     else
                     {
@@ -47,7 +47,8 @@ namespace WindowsFormsApplication5
                 }
             }
         }
-
+        
+        // Вводим предмет - получаем учителя (список учителей), что ведет этот предмет
         private void TeacherOn_Click(object sender, EventArgs e)
         {
             string s = textSubject.Text;
@@ -79,7 +80,8 @@ namespace WindowsFormsApplication5
             }
         }
         
-        private void Save_Click(object sender, EventArgs e) // сохранить
+        // Сохраняем исходный файл в формате XML
+        private void Save_Click(object sender, EventArgs e)
         {
             if (list.Count == 0)
             {
@@ -103,6 +105,7 @@ namespace WindowsFormsApplication5
             }
         }
 
+        // Вводим имя учителя - получаем предмет (список предметов), что он ведет
         private void SubjectOn_Click(object sender, EventArgs e)
         {
             string s = textTeacher.Text;
@@ -133,6 +136,7 @@ namespace WindowsFormsApplication5
             }
         }
 
+
         private void Remove_Click(object sender, EventArgs e)
         {
             try
@@ -151,6 +155,7 @@ namespace WindowsFormsApplication5
             }
         }
 
+        // начало работы
         private void Start_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
