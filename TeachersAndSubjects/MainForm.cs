@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication5
@@ -14,11 +16,11 @@ namespace WindowsFormsApplication5
             InitializeComponent();
         }
 
-        List<Person> list = new List<Person>(); // Список учителей и предметов
+        List<Person> list = new List<Person>(); // создаем список учителей и предметов, что они ведут
         private BindingSource bindingSource1 = new BindingSource();
 
         DataSet ds = new DataSet();
-        private void Add_Click(object sender, EventArgs e)
+        private void Add_Click(object sender, EventArgs e) // добавляем учителя и предмет
         {
             string teacher = Teacher.Text;
             string subject = textSubj.Text;
@@ -37,7 +39,7 @@ namespace WindowsFormsApplication5
                 {
                     if (list.Exists(x => x.Name == teacher) && list.Exists(x => x.Subject == subject))
                     {
-                        MessageBox.Show("Такая пара значений уже есть");
+                        MessageBox.Show("Така пара значений уже есть");
                     }
                     else
                     {
@@ -48,8 +50,8 @@ namespace WindowsFormsApplication5
             }
         }
         
-        // Вводим предмет - получаем учителя (список учителей), что ведет этот предмет
-        private void TeacherOn_Click(object sender, EventArgs e)
+        // указываем предмет - получаем учителя (список учителей), что ведут этот предмет
+        private void TeacherOn_Click(object sender, EventArgs e) 
         {
             string s = textSubject.Text;
             if (string.IsNullOrEmpty(s))
@@ -80,32 +82,7 @@ namespace WindowsFormsApplication5
             }
         }
         
-        // Сохраняем исходный файл в формате XML
-        private void Save_Click(object sender, EventArgs e)
-        {
-            if (list.Count == 0)
-            {
-                return;
-            }
-            else
-            {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "XML|*.xml";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        ds.Tables[0].WriteXml(sfd.FileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
-                }
-            }
-        }
-
-        // Вводим имя учителя - получаем предмет (список предметов), что он ведет
+        // указываем учителя - получаем предмет (список предметов), что ведет это учитель
         private void SubjectOn_Click(object sender, EventArgs e)
         {
             string s = textTeacher.Text;
@@ -136,7 +113,7 @@ namespace WindowsFormsApplication5
             }
         }
 
-
+        // удаляем пару
         private void Remove_Click(object sender, EventArgs e)
         {
             try
@@ -155,7 +132,6 @@ namespace WindowsFormsApplication5
             }
         }
 
-        // начало работы
         private void Start_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -172,6 +148,23 @@ namespace WindowsFormsApplication5
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                }
+            }
+        }
+        
+        // сохраняем результат в формате xml
+        private void Save_Click(object sender, EventArgs e)
+        {
+            if (list.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+                XmlSerializer format = new XmlSerializer(typeof(List<Person>));
+                using (FileStream file = new FileStream("file.xml", FileMode.Create))
+                {
+                    format.Serialize(file, list);
                 }
             }
         }
