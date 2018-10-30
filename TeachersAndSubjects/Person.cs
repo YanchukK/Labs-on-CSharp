@@ -1,14 +1,16 @@
-namespace WindowsFormsApplication5
-{
-    public class Person
-    {
-            public string Name { get; set; }        // имя учителя
-            public string Subject { get; set; }     // предмет
+using System;
 
-        public Person(string name, string subject)
-        {
-            Name = name;
-            Subject = subject;
-        }
+[Serializable]
+public class Person
+{
+    public string Name { get; set; }        // имя учителя
+    public string Subject { get; set; }     // предмет
+
+    public Person(string name, string subject)
+    {
+        Name = name;
+        Subject = subject;
     }
+
+    public Person() { }
 }
