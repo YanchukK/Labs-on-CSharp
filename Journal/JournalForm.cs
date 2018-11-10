@@ -32,8 +32,26 @@ namespace TeachersAndSubjects
                 dataGridView1.DataSource = dt;
             }       
         }
-        
-        private void AddButton_Click(object sender, EventArgs e) // кнопка добавения новой пары
+
+        public bool DataCheck(string teacher, string subject) // ф-ция проверки на наличие в БД пары
+        {
+            using (connection = new SqlConnection(connectionSrting))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM" +
+                    "[dbo].[Journal] WHERE NOT EXISTS(SELECT * FROM [dbo].[Journal]" +
+                    "WHERE Teacher = @Teacher and Subject = @Subject)", connection);
+                cmd.Parameters.AddWithValue("Teacher", teacher);
+                cmd.Parameters.AddWithValue("Subject", subject);
+                if (cmd.ExecuteScalar().ToString() == "0") // проверяем, есть ли уже такая пара
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
@@ -42,28 +60,20 @@ namespace TeachersAndSubjects
             {
                 return;
             }
+            else if (DataCheck(teacher, subject))
+            {
+                MessageBox.Show("Такая пара значений уже есть");
+            }
             else
             {
                 using (connection = new SqlConnection(connectionSrting))
                 {
                     connection.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM" +
-                        "[dbo].[Journal] WHERE NOT EXISTS(SELECT * FROM [dbo].[Journal]" +
-                        "WHERE Teacher = @Teacher and Subject = @Subject)", connection); // с помощью EXISTS проверяем наличие пары
-                        cmd.Parameters.AddWithValue("Teacher", teacher);
+                    SqlCommand cmd = new SqlCommand("insert into [dbo].[Journal] values(@Teacher, @Subject)", connection);
+                    cmd.Parameters.AddWithValue("Teacher", teacher);
                     cmd.Parameters.AddWithValue("Subject", subject);
-                    if (cmd.ExecuteScalar().ToString() == "0") // проверяем, есть ли уже такая пара
-                    {
-                        MessageBox.Show("Такая пара значений уже есть");
-                    }
-                    else
-                    {
-                        cmd = new SqlCommand("insert into [dbo].[Journal] values(@Teacher, @Subject)", connection); // добавляем новую пару
-                        cmd.Parameters.AddWithValue("Teacher", teacher);
-                        cmd.Parameters.AddWithValue("Subject", subject);
-                        cmd.ExecuteNonQuery();
-                        disp_data();
-                    }
+                    cmd.ExecuteNonQuery();
+                    disp_data();
                 }
             }
         }
