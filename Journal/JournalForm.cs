@@ -1,16 +1,18 @@
 using System;
 using System.Data;
+using System.IO;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
-namespace TeachersAndSubjects
+namespace Journal
 {
     public partial class JournalForm : Form
     {
         static string connectionSrting = @"Data Source = (LocalDB)\MSSQLLocalDB;
-                                    AttachDbFilename=C:\Users\Dasha\source\repos\
-                                    TeachersAndSubjects\TeachersAndSubjects\Journal.mdf;
-                                    Integrated Security = True";
+                                    AttachDbFilename=" +
+        Directory.GetCurrentDirectory() + @"\Database1.mdf;
+                                    Integrated Security = True;
+                                    User Instance=False";
         static SqlConnection connection;
 
         public JournalForm()
@@ -31,9 +33,9 @@ namespace TeachersAndSubjects
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
                 dataGridView1.DataSource = dt;
-            }       
+            }
         }
-        
+
         // ф-ция проверки на наличие в БД пары
         public static bool DataCheck(string teacher, string subject)
         {
@@ -50,17 +52,41 @@ namespace TeachersAndSubjects
                     return true;
                 }
             }
-
             return false;
         }
+        
+        // ф-ция выполения запросов
+        void RequestExecution(string request, params string[] array)
+        {
+            using (connection = new SqlConnection(connectionSrting)) // открываем подключение
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(request, connection);
+                if (array.Length == 2) // для вставки и удаления
+                {
+                    cmd.Parameters.AddWithValue("Teacher", array[0]);
+                    cmd.Parameters.AddWithValue("Subject", array[1]);
+                }
+                else // для обновления
+                {
+                    cmd.Parameters.AddWithValue("NewTeacher", array[0]);
+                    cmd.Parameters.AddWithValue("NewSubject", array[1]);
+                    cmd.Parameters.AddWithValue("Teacher", array[2]);
+                    cmd.Parameters.AddWithValue("Subject", array[3]);
+                }
+                cmd.ExecuteNonQuery();
+                disp_data();
+            }
+        }
 
+        // добавляем новую пару значений
         private void AddButton_Click(object sender, EventArgs e)
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-            
+
             //если пусто, ждем пока поле заполниться
-            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) 
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject))
             {
                 return;
             }
@@ -70,23 +96,17 @@ namespace TeachersAndSubjects
             }
             else
             {
-                using (connection = new SqlConnection(connectionSrting))
-                {
-                    connection.Open();
-                    SqlCommand cmd = new SqlCommand("insert into [dbo].[Journal] values(@Teacher, @Subject)", connection);
-                    cmd.Parameters.AddWithValue("Teacher", teacher);
-                    cmd.Parameters.AddWithValue("Subject", subject);
-                    cmd.ExecuteNonQuery();
-                    disp_data();
-                }
+                string req = "insert into [dbo].[Journal] values(@Teacher, @Subject)";
+                RequestExecution(req, teacher, subject);
             }
         }
 
+        // удаляем пару значений
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-            
+
             //если пусто, ждем пока поле заполниться
             if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject))
             {
@@ -98,25 +118,19 @@ namespace TeachersAndSubjects
             }
             else
             {
-                using (connection = new SqlConnection(connectionSrting))
-                {
-                    connection.Open();
-                    SqlCommand cmd = new SqlCommand("delete from [dbo].[Journal] where Teacher=@Teacher and Subject=@Subject", connection);
-                    cmd.Parameters.AddWithValue("Teacher", teacher);
-                    cmd.Parameters.AddWithValue("Subject", subject);
-                    cmd.ExecuteNonQuery();
-                    disp_data();
-                }
+                string req = "delete from [dbo].[Journal] where Teacher = @Teacher and Subject = @Subject";
+                RequestExecution(req, teacher, subject);
             }
         }
 
-        private void UpdateButton_Click(object sender, EventArgs e)
+        // обновляем
+        private void UpdateButton_Click_1(object sender, EventArgs e)
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-            
+
             //если пусто, ждем пока поле заполниться
-            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) 
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject))
             {
                 return;
             }
@@ -126,25 +140,16 @@ namespace TeachersAndSubjects
             }
             else // такая пара значений есть
             {
-                Update form = new Update();
+                Update form = new Update(); // открывается новая форма для новых значений
                 form.ShowDialog();
 
                 string newTeacher = form.NewTeacherName.Trim();
                 string newSubject = form.NewSubject.Trim();
 
-                using (connection = new SqlConnection(connectionSrting))
-                {
-                    connection.Open();
-                    SqlCommand cmd = new SqlCommand("UPDATE [dbo].[Journal] " +
+                string req = "UPDATE [dbo].[Journal] " +
                         "SET Teacher=@NewTeacher, Subject=@NewSubject " +
-                        "WHERE Teacher=@Teacher and Subject=@Subject", connection);
-                    cmd.Parameters.AddWithValue("NewTeacher", newTeacher);
-                    cmd.Parameters.AddWithValue("NewSubject", newSubject);
-                    cmd.Parameters.AddWithValue("Teacher", teacher);
-                    cmd.Parameters.AddWithValue("Subject", subject);
-                    cmd.ExecuteNonQuery();
-                    disp_data();
-                }
+                        "WHERE Teacher=@Teacher and Subject=@Subject";
+                RequestExecution(req, newTeacher, newSubject, teacher, subject);
             }
         }
     }
