@@ -32,8 +32,9 @@ namespace TeachersAndSubjects
                 dataGridView1.DataSource = dt;
             }       
         }
-
-        public static bool DataCheck(string teacher, string subject) // ф-ция проверки на наличие в БД пары
+        
+        // ф-ция проверки на наличие в БД пары
+        public static bool DataCheck(string teacher, string subject)
         {
             using (connection = new SqlConnection(connectionSrting))
             {
@@ -56,8 +57,9 @@ namespace TeachersAndSubjects
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-
-            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) //если пусто, ждем пока поле заполниться
+            
+            //если пусто, ждем пока поле заполниться
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) 
             {
                 return;
             }
@@ -83,8 +85,9 @@ namespace TeachersAndSubjects
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-
-            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) //если пусто, ждем пока поле заполниться
+            
+            //если пусто, ждем пока поле заполниться
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject))
             {
                 return;
             }
@@ -110,8 +113,9 @@ namespace TeachersAndSubjects
         {
             string teacher = textTeacherName.Text;
             string subject = textSubject.Text;
-
-            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) //если пусто, ждем пока поле заполниться
+            
+            //если пусто, ждем пока поле заполниться
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) 
             {
                 return;
             }
