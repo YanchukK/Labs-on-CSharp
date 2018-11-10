@@ -10,7 +10,7 @@ namespace TeachersAndSubjects
         static string connectionSrting = @"Data Source = (LocalDB)\MSSQLLocalDB;
                                     AttachDbFilename=C:\Users\Dasha\source\repos\TeachersAndSubjects\TeachersAndSubjects\Journal.mdf;
                                     Integrated Security = True";
-        SqlConnection connection;
+        static SqlConnection connection;
 
         public JournalForm()
         {
@@ -33,7 +33,7 @@ namespace TeachersAndSubjects
             }       
         }
 
-        public bool DataCheck(string teacher, string subject) // ф-ция проверки на наличие в БД пары
+        public static bool DataCheck(string teacher, string subject) // ф-ция проверки на наличие в БД пары
         {
             using (connection = new SqlConnection(connectionSrting))
             {
@@ -48,6 +48,7 @@ namespace TeachersAndSubjects
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -70,6 +71,70 @@ namespace TeachersAndSubjects
                 {
                     connection.Open();
                     SqlCommand cmd = new SqlCommand("insert into [dbo].[Journal] values(@Teacher, @Subject)", connection);
+                    cmd.Parameters.AddWithValue("Teacher", teacher);
+                    cmd.Parameters.AddWithValue("Subject", subject);
+                    cmd.ExecuteNonQuery();
+                    disp_data();
+                }
+            }
+        }
+
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+            string teacher = textTeacherName.Text;
+            string subject = textSubject.Text;
+
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) //если пусто, ждем пока поле заполниться
+            {
+                return;
+            }
+            else if (!DataCheck(teacher, subject))
+            {
+                MessageBox.Show("Такой пары значений нету");
+            }
+            else
+            {
+                using (connection = new SqlConnection(connectionSrting))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("delete from [dbo].[Journal] where Teacher=@Teacher and Subject=@Subject", connection);
+                    cmd.Parameters.AddWithValue("Teacher", teacher);
+                    cmd.Parameters.AddWithValue("Subject", subject);
+                    cmd.ExecuteNonQuery();
+                    disp_data();
+                }
+            }
+        }
+
+        private void UpdateButton_Click(object sender, EventArgs e)
+        {
+            string teacher = textTeacherName.Text;
+            string subject = textSubject.Text;
+
+            if (string.IsNullOrEmpty(teacher) || string.IsNullOrEmpty(subject)) //если пусто, ждем пока поле заполниться
+            {
+                return;
+            }
+            else if (!DataCheck(teacher, subject))
+            {
+                MessageBox.Show("Такой пары значений нету");
+            }
+            else // такая пара значений есть
+            {
+                Update form = new Update();
+                form.ShowDialog();
+
+                string newTeacher = form.NewTeacherName.Trim();
+                string newSubject = form.NewSubject.Trim();
+
+                using (connection = new SqlConnection(connectionSrting))
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("UPDATE [dbo].[Journal] " +
+                        "SET Teacher=@NewTeacher, Subject=@NewSubject " +
+                        "WHERE Teacher=@Teacher and Subject=@Subject", connection);
+                    cmd.Parameters.AddWithValue("NewTeacher", newTeacher);
+                    cmd.Parameters.AddWithValue("NewSubject", newSubject);
                     cmd.Parameters.AddWithValue("Teacher", teacher);
                     cmd.Parameters.AddWithValue("Subject", subject);
                     cmd.ExecuteNonQuery();
