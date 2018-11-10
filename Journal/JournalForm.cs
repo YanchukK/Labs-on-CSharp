@@ -18,7 +18,7 @@ namespace TeachersAndSubjects
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void JournalForm_Load(object sender, EventArgs e)
         {
             disp_data();
         }
