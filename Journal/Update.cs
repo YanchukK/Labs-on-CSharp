@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace Journal
 {
-    public partial class Update : Form
+    public partial class UpdateForm : Form
     {
-        public Update()
+        public UpdateForm()
         {
             InitializeComponent();
         }
