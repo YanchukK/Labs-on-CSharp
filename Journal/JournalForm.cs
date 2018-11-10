@@ -140,7 +140,7 @@ namespace Journal
             }
             else // такая пара значений есть
             {
-                Update form = new Update(); // открывается новая форма для новых значений
+                UpdateForm form = new UpdateForm(); // открывается новая форма для новых значений
                 form.ShowDialog();
 
                 string newTeacher = form.NewTeacherName.Trim();
