@@ -8,7 +8,8 @@ namespace TeachersAndSubjects
     public partial class JournalForm : Form
     {
         static string connectionSrting = @"Data Source = (LocalDB)\MSSQLLocalDB;
-                                    AttachDbFilename=C:\Users\Dasha\source\repos\TeachersAndSubjects\TeachersAndSubjects\Journal.mdf;
+                                    AttachDbFilename=C:\Users\Dasha\source\repos\
+                                    TeachersAndSubjects\TeachersAndSubjects\Journal.mdf;
                                     Integrated Security = True";
         static SqlConnection connection;
 
