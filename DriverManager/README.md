@@ -12,3 +12,5 @@
  - маркер готовности к работе
 
 Form2, Form3 - дочерние окна
+
+![git](https://user-images.githubusercontent.com/32255660/48317307-a5233c00-e5f8-11e8-8937-e0f48e1b738d.jpg)
